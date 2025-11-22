@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoQuest - Nature Exploration App</title>
+    <link rel="stylesheet" href="mainpage.css">
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="app-logo">🌿</div>
+            <h1 class="app-title">EcoQuest</h1>
+            <p class="app-subtitle" data-en="Explore. Learn. Conserve." data-ms="Jelajah. Belajar. Pulihara.">Explore. Learn. Conserve.</p>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" data-en="Username" data-ms="Nama Pengguna">Username</label>
+                    <input type="text" id="username" required placeholder="Enter username" data-en-placeholder="Enter username" data-ms-placeholder="Masukkan nama pengguna">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" data-en="Password" data-ms="Kata Laluan">Password</label>
+                    <input type="password" id="password" required placeholder="Enter password" data-en-placeholder="Enter password" data-ms-placeholder="Masukkan kata laluan">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large" data-en="Login" data-ms="Log Masuk">Login</button>
+            </form>
+            
+            <div id="loginError" class="error-message"></div>
+            
+            <p style="margin-top: var(--spacing-lg);">
+                <span data-en="Don't have an account?" data-ms="Tiada akaun?">Don't have an account?</span>
+                <a href="javascript:void(0)" onclick="goToSignup()" style="color: var(--primary-green); font-weight: 600;">
+                    <span data-en="Sign up here" data-ms="Daftar di sini">Sign up here</span>
+                </a>
+            </p>
+            
+            <!-- Language Selector for Login Screen -->
+            <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="ms">BM</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGNUP PAGE -->
+    <div id="signupPage" class="page">
+        <div class="login-container">
+            <button class="btn-back" onclick="goToLogin()" aria-label="Back">&larr;</button>
+            <h1 data-en="Create Account" data-ms="Buat Akaun">Create Account</h1>
+            
+            <form id="signupForm" class="login-form">
+                <div class="form-group">
+                    <label for="signupUsername" data-en="Username" data-ms="Nama Pengguna">Username</label>
+                    <input type="text" id="signupUsername" required placeholder="Choose a username" data-en-placeholder="Choose a username" data-ms-placeholder="Pilih nama pengguna">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupEmail" data-en="Email" data-ms="E-mel">Email</label>
+                    <input type="email" id="signupEmail" required placeholder="Enter your email" data-en-placeholder="Enter your email" data-ms-placeholder="Masukkan e-mel Anda">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupPassword" data-en="Password" data-ms="Kata Laluan">Password</label>
+                    <input type="password" id="signupPassword" required placeholder="Create a password" data-en-placeholder="Create a password" data-ms-placeholder="Buat kata laluan">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large" data-en="Sign Up" data-ms="Daftar">Sign Up</button>
+            </form>
+            
+            <div id="signupError" class="error-message"></div>
+
+            <p style="margin-top: var(--spacing-lg);">
+                <span data-en="Already have an account?" data-ms="Sudah ada akaun?">Already have an account?</span>
+                <a href="javascript:void(0)" onclick="goToLogin()" style="color: var(--primary-green); font-weight: 600;">
+                    <span data-en="Login here" data-ms="Log masuk di sini">Login here</span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN APP PAGE -->
+    <div id="mainApp" class="page">
+        <!-- Top Navigation Bar (FIXED) -->
+        <nav class="navbar">
+            <!-- Left Side: Logo + Brand -->
+            <div class="navbar-left">
+                <div class="navbar-logo">
+                    <img src="images/logo.png" alt="EcoQuest Logo" class="logo.png">
+                </div>
+                <div class="navbar-brand">EcoQuest</div>
+            </div>
+            
+            <!-- Right Side: Language + Account -->
+            <div class="navbar-right">
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ms">BM</button>
+                </div>
+                <button class="account-menu-btn" id="accountMenuBtn" onclick="toggleAccountMenu()" aria-label="Account Menu" title="Account">⚙️</button>
+            </div>
+        </nav>
+
+        <!-- Back Button (initially hidden) -->
+        <button id="userBackBtn" class="btn-back-floating" onclick="goBack()" aria-label="Go Back" style="display: none;">
+           &larr;
+        </button>
+
+        <!-- Account Menu Dropdown -->
+        <div id="accountMenuDropdown" class="account-menu-dropdown" style="display:none;">
+            <div class="account-menu-header">
+                <p id="accountMenuUsername" style="margin:0;font-weight:600;"></p>
+                <button class="account-menu-close" onclick="toggleAccountMenu()">&times;</button>
+            </div>
+            
+            <button class="account-menu-item" onclick="openAccountSettings()" data-en="Account Settings" data-ms="Tetapan Akaun">
+                👤 Account Settings
+            </button>
+            
+            <button class="account-menu-item" onclick="openNotificationSettings()" data-en="Notifications" data-ms="Notifikasi">
+                🔔 Notifications
+            </button>
+            
+            <button class="account-menu-item btn-danger-menu" onclick="performLogout()" data-en="Logout" data-ms="Log Keluar">
+                🚪 Logout
+            </button>
+        </div>
+
+        <!-- Account Settings Modal -->
+        <div id="accountSettingsModal" class="modal">
+            <div class="modal-content account-modal">
+                <button class="modal-close" onclick="closeAccountSettings()">&times;</button>
+                <h3 data-en="Account Settings" data-ms="Tetapan Akaun">Account Settings</h3>
+                
+                <form id="accountSettingsForm" class="account-form">
+                    <div class="form-group">
+                        <label for="settingUsername" data-en="Username" data-ms="Nama Pengguna">Username</label>
+                        <input type="text" id="settingUsername" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingEmail" data-en="Email" data-ms="E-mel">Email</label>
+                        <input type="email" id="settingEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingPassword" data-en="New Password" data-ms="Kata Laluan Baru">New Password</label>
+                        <input type="password" id="settingPassword" placeholder="••••••••" data-en-placeholder="••••••••" data-ms-placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" data-en="Save Changes" data-ms="Simpan Perubahan">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Settings Modal -->
+        <div id="notificationSettingsModal" class="modal">
+            <div class="modal-content account-modal">
+                <button class="modal-close" onclick="closeNotificationSettings()">&times;</button>
+                <h3 data-en="Notification Settings" data-ms="Tetapan Pemberitahuan">Notification Settings</h3>
+                
+                <form id="notificationSettingsForm" class="account-form">
+                    <div class="setting-checkbox">
+                        <input type="checkbox" id="promoBtnNotif" checked>
+                        <label for="promoBtnNotif" data-en="Promotion Notifications" data-ms="Pemberitahuan Promosi">Promotion Notifications</label>
+                    </div>
+                    
+                    <div class="setting-checkbox">
+                        <input type="checkbox" id="eventNotif" checked>
+                        <label for="eventNotif" data-en="Event Notifications" data-ms="Pemberitahuan Acara">Event Notifications</label>
+                    </div>
+                    
+                    <div class="setting-checkbox">
+                        <input type="checkbox" id="tourNotif" checked>
+                        <label for="tourNotif" data-en="Tour Booking Confirmations" data-ms="Pengesahan Tempahan Perjalanan">Tour Booking Confirmations</label>
+                    </div>
+                    
+                    <div class="setting-checkbox">
+                        <input type="checkbox" id="wildlifeNotif" checked>
+                        <label for="wildlifeNotif" data-en="Wildlife Updates" data-ms="Kemas Kini Hidupan Liar">Wildlife Updates</label>
+                    </div>
+                    
+                    <div class="setting-checkbox">
+                        <input type="checkbox" id="ecopointsNotif" checked>
+                        <label for="ecopointsNotif" data-en="EcoPoints Rewards" data-ms="Ganjaran EcoPoints">EcoPoints Rewards</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" data-en="Save Preferences" data-ms="Simpan Pilihan">Save Preferences</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- HOME PAGE -->
+        <section id="homePage" class="content-section active">
+            <div class="home-header">
+                <div class="home-title">
+                    <h2 data-en="Welcome to EcoQuest!" data-ms="Selamat Datang ke EcoQuest!">Welcome to EcoQuest!</h2>
+                    <p id="userGreeting" class="greeting"></p>
+                </div>
+            </div>
+
+            <!-- Emergency Alert Button -->
+            <div class="emergency-section">
+                <button class="btn btn-emergency" onclick="triggerEmergencyAlert()" aria-label="Emergency Alert">
+                    🚨 <span data-en="Emergency Alert" data-ms="Makluman Kecemasan">Emergency Alert</span>
+                </button>
+                <p class="small-text" data-en="Press to contact park rangers" data-ms="Tekan untuk hubungi penjaga taman">Press to contact park rangers</p>
+            </div>
+
+            <!-- Quick Actions Grid -->
+            <div class="quick-actions">
+                <div class="action-card" onclick="navigateTo('tours')">
+                    <div class="action-icon">🎫</div>
+                    <h3 data-en="Book Tours" data-ms="Tempah Perjalanan">Book Tours</h3>
+                    <p data-en="Reserve your eco-tour" data-ms="Tempah perjalanan alam Anda">Reserve your eco-tour</p>
+                </div>
+                
+                <div class="action-card" onclick="navigateTo('wildlife')">
+                    <div class="action-icon">📱</div>
+                    <h3 data-en="Scan Info" data-ms="Imbas Maklumat">Scan Info</h3>
+                    <p data-en="AR plant/animal data" data-ms="Data tumbuhan/hewan AR">AR plant/animal data</p>
+                </div>
+                
+                <div class="action-card" onclick="navigateTo('events')">
+                    <div class="action-icon">📅</div>
+                    <h3 data-en="Events" data-ms="Acara">Events</h3>
+                    <p data-en="Park programs & volunteers" data-ms="Program taman & sukarelawan">Park programs & volunteers</p>
+                </div>
+                
+                <div class="action-card" onclick="navigateTo('ecopoints')">
+                    <div class="action-icon">🌱</div>
+                    <h3 data-en="EcoPoints" data-ms="EcoPoints">EcoPoints</h3>
+                    <p data-en="Earn rewards" data-ms="Dapatkan ganjaran">Earn rewards</p>
+                </div>
+            </div>
+
+            <!-- Featured Content -->
+            <div class="featured-section">
+                <h3 data-en="Latest Wildlife Updates" data-ms="Kemas Kini Hidupan Liar Terbaru">Latest Wildlife Updates</h3>
+                <div id="homeUpdates" class="updates-list"></div>
+            </div>
+
+            <!-- NEW: Feedback Section -->
+            <div class="feedback-section">
+                <h3 data-en="Share Your Experience" data-ms="Kongsi Pengalaman Anda">Share Your Experience</h3>
+                <form id="homeFeedbackForm">
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">★</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">★</label>
+                    </div>
+                    <textarea id="homeFeedbackComments" class="feedback-textarea" rows="4" 
+                              placeholder="Tell us what you think..."
+                              data-en-placeholder="Tell us what you think..."
+                              data-ms-placeholder="Beritahu kami pandangan anda..."></textarea>
+                    <button type="submit" class="btn btn-primary" data-en="Submit Feedback" data-ms="Hantar Maklum Balas">Submit Feedback</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TOURS PAGE -->
+        <section id="toursPage" class="content-section">
+            <h2 data-en="Book Eco-Tours" data-ms="Tempah Perjalanan Alam">Book Eco-Tours</h2>
+            
+            <div class="tours-filters">
+                <input type="date" id="tourDate" class="filter-input" aria-label="Tour Date">
+                <select id="tourType" class="filter-input" aria-label="Tour Type">
+                    <option value="" data-en="All Types" data-ms="Semua Jenis">All Types</option>
+                    <option value="hiking" data-en="Hiking" data-ms="Mendaki">Hiking</option>
+                    <option value="wildlife" data-en="Wildlife" data-ms="Hidupan Liar">Wildlife</option>
+                    <option value="waterfall" data-en="Waterfall" data-ms="Air Terjun">Waterfall</option>
+                    <option value="bird" data-en="Bird Watching" data-ms="Memerhati Burung">Bird Watching</option>
+                </select>
+            </div>
+
+            <div id="toursList" class="tours-list">
+                <!-- Tours populated by JavaScript -->
+            </div>
+
+            <div id="bookingModal" class="modal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <h3 id="modalTourTitle"></h3>
+                    <form id="bookingForm">
+                        <div class="form-group">
+                            <label for="bookingDate" data-en="Select Date" data-ms="Pilih Tarikh">Select Date</label>
+                            <input type="date" id="bookingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingPeople" data-en="Number of People" data-ms="Bilangan Orang">Number of People</label>
+                            <input type="number" id="bookingPeople" min="1" max="20" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingNotes" data-en="Special Requests" data-ms="Permintaan Khusus">Special Requests</label>
+                            <textarea id="bookingNotes" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-en="Confirm Booking" data-ms="Sahkan Tempahan">Confirm Booking</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- WILDLIFE UPDATES PAGE (SCAN) -->
+        <section id="wildlifePage" class="content-section">
+            <h2 data-en="Wildlife Updates & Scan Info" data-ms="Kemas Kini Hidupan Liar & Imbas Maklumat">Wildlife Updates & Scan Info</h2>
+            
+            <button class="btn btn-primary" onclick="activateScanMode()" aria-label="Start Scanner">
+                📷 <span data-en="Activate Scanner" data-ms="Aktifkan Pengimbas">Activate Scanner</span>
+            </button>
+
+            <div class="scan-section" id="scanSection" style="display:none;">
+                <div class="camera-placeholder">
+                    <p data-en="Point camera at plant or animal" data-ms="Arahkan kamera ke tumbuhan atau haiwan">Point camera at plant or animal</p>
+                </div>
+                <div class="scan-sample-items">
+                    <div class="sample-item" onclick="showSpeciesInfo('cat')">
+                        <div>🐈</div>
+                        <p data-en="Cat" data-ms="Kucing">Cat</p>
+                    </div>
+                    <div class="sample-item" onclick="showSpeciesInfo('ostrich')">
+                        <div>🐦</div>
+                        <p data-en="Ostrich" data-ms="Burung Unta">Ostrich</p>
+                    </div>
+                    <div class="sample-item" onclick="showSpeciesInfo('swan')">
+                        <div>🦢</div>
+                        <p data-en="Swan" data-ms="Angsa">Swan</p>
+                    </div>
+                    <div class="sample-item" onclick="showSpeciesInfo('goat')">
+                        <div>🐐</div>
+                        <p data-en="Goat" data-ms="Kambing">Goat</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="speciesInfo" class="species-info" style="display:none;">
+                <button class="btn-back" onclick="closeScanMode()">&larr; <span data-en="Back" data-ms="Kembali">Back</span></button>
+                <div id="speciesContent"></div>
+            </div>
+
+            <div class="wildlife-updates">
+                <h3 data-en="Real-Time Updates from Rangers" data-ms="Kemas Kini Masa Nyata dari Penjaga">Real-Time Updates from Rangers</h3>
+                <div id="wildlifeUpdatesList" class="updates-list">
+                    <!-- Updates populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENTS PAGE -->
+        <section id="eventsPage" class="content-section">
+            <h2 data-en="Park Events & Volunteer Programs" data-ms="Acara Taman & Program Sukarelawan">Park Events & Volunteer Programs</h2>
+            
+            <div class="events-tabs">
+                <button class="tab-btn active" data-tab="events" data-en="Events" data-ms="Acara">Events</button>
+                <button class="tab-btn" data-tab="volunteer" data-en="Volunteer" data-ms="Sukarelawan">Volunteer</button>
+            </div>
+
+            <div id="eventsTab" class="tab-content active">
+                <div id="eventsList" class="events-list">
+                    <!-- Events populated by JavaScript -->
+                </div>
+            </div>
+
+            <div id="volunteerTab" class="tab-content">
+                <div id="volunteerList" class="events-list">
+                    <!-- Volunteer programs populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ECOPOINTS PAGE -->
+        <section id="ecopointsPage" class="content-section">
+            <h2 data-en="EcoPoints Reward System" data-ms="Sistem Ganjaran EcoPoints">EcoPoints Reward System</h2>
+            
+            <div class="ecopoints-header">
+                <div class="points-display">
+                    <div class="points-number" id="userPoints">450</div>
+                    <p class="points-label" data-en="Your EcoPoints" data-ms="EcoPoints Anda">Your EcoPoints</p>
+                    <div class="points-progress">
+                        <div class="points-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="points-info">
+                <p data-en="Earn points by taking eco-friendly actions!" data-ms="Dapatkan mata dengan melakukan tindakan mesra alam!">Earn points by taking eco-friendly actions!</p>
+            </div>
+
+            <div class="actions-grid">
+                <div class="eco-action">
+                    <div class="action-icon">♻️</div>
+                    <h4 data-en="Recycle" data-ms="Kitar Semula">Recycle</h4>
+                    <p data-en="+10 pts" data-ms="+10 mata">+10 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(10, 'Recycled items')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+
+                <div class="eco-action">
+                    <div class="action-icon">🚶</div>
+                    <h4 data-en="Hiking" data-ms="Mendaki">Hiking</h4>
+                    <p data-en="+25 pts" data-ms="+25 mata">+25 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(25, 'Completed hiking')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+
+                <div class="eco-action">
+                    <div class="action-icon">🌱</div>
+                    <h4 data-en="Plant Tree" data-ms="Tanam Pokok">Plant Tree</h4>
+                    <p data-en="+50 pts" data-ms="+50 mata">+50 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(50, 'Planted a tree')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+
+                <div class="eco-action">
+                    <div class="action-icon">📝</div>
+                    <h4 data-en="Survey" data-ms="Tinjauan">Survey</h4>
+                    <p data-en="+15 pts" data-ms="+15 mata">+15 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(15, 'Completed survey')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+
+                <div class="eco-action">
+                    <div class="action-icon">🎯</div>
+                    <h4 data-en="Challenge" data-ms="Cabaran">Challenge</h4>
+                    <p data-en="+35 pts" data-ms="+35 mata">+35 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(35, 'Completed challenge')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+
+                <div class="eco-action">
+                    <div class="action-icon">🤝</div>
+                    <h4 data-en="Volunteer" data-ms="Sukarelawan">Volunteer</h4>
+                    <p data-en="+60 pts" data-ms="+60 mata">+60 pts</p>
+                    <button class="btn btn-small" onclick="earnPoints(60, 'Volunteered')" data-en="Claim" data-ms="Tuntut">Claim</button>
+                </div>
+            </div>
+
+            <div class="rewards-section">
+                <h3 data-en="Redeem Rewards" data-ms="Tukar Ganjaran">Redeem Rewards</h3>
+                <div id="rewardsList" class="rewards-list">
+                    <!-- Rewards populated by JavaScript -->
+                </div>
+            </div>
+
+            <div id="pointsHistory" class="points-history">
+                <h3 data-en="Activity History" data-ms="Sejarah Aktiviti">Activity History</h3>
+                <div id="historyList"></div>
+            </div>
+        </section>
+        
+        <!-- MAP PAGE (New) -->
+        <section id="mapPage" class="content-section">
+            <h2 data-en="Park Map" data-ms="Peta Taman">Park Map</h2>
+            <div class="map-container">
+                <!-- Placeholder for an interactive map or image -->
+                <img src="https://placehold.co/600x800/b7e4c7/2d6a4f?text=EcoQuest+Park+Map" alt="Park Map" style="width: 100%; height: auto; border-radius: var(--radius-lg);">
+            </div>
+        </section>
+
+        <!-- PROFILE PAGE -->
+        <section id="profilePage" class="content-section">
+            <h2 data-en="My Profile" data-ms="Profil Saya">My Profile</h2>
+            
+            <div class="profile-info">
+                <div class="profile-avatar">👤</div>
+                <h3 id="profileUsername"></h3>
+                <p id="profileEmail" class="profile-email"></p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-number" id="profileEcoPoints">0</span>
+                    <span class="stat-label" data-en="EcoPoints" data-ms="EcoPoints">EcoPoints</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="profileTours">0</span>
+                    <span class="stat-label" data-en="Tours Booked" data-ms="Perjalanan Ditempah">Tours Booked</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="profileEvents">0</span>
+                    <span class="stat-label" data-en="Events Joined" data-ms="Acara Disertai">Events Joined</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 data-en="My Bookings" data-ms="Tempahan Saya">My Bookings</h3>
+                <div id="myBookings" class="bookings-list">
+                    <!-- User's bookings populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 data-en="Settings" data-ms="Tetapan">Settings</h3>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <span data-en="Notifications" data-ms="Notifikasi">Notifications</span>
+                        <input type="checkbox" checked>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-danger" onclick="performLogout()" aria-label="Logout" data-en="Logout" data-ms="Log Keluar">Logout</button>
+        </section>
+        
+        
+        <!-- NEW BOTTOM NAVIGATION BAR -->
+        <nav class="bottom-navbar">
+            <button class="bottom-nav-btn" data-page="tours">
+                <span class="nav-icon">🎫</span>
+                <span class="nav-text" data-en="Tours" data-ms="Lawatan">Tours</span>
+            </button>
+            <button class="bottom-nav-btn" data-page="events">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text" data-en="Events" data-ms="Acara">Events</span>
+            </button>
+            <button id="nav-scan-btn" class="bottom-nav-btn" data-page="wildlife">
+                SCAN
+            </button>
+            <button class="bottom-nav-btn" data-page="map">
+                <span class="nav-icon">🗺️</span>
+                <span class="nav-text" data-en="Map" data-ms="Peta">Map</span>
+            </button>
+            <button class="bottom-nav-btn" data-page="ecopoints">
+                <span class="nav-icon">🌱</span>
+                <span class="nav-text" data-en="Points" data-ms="Mata">Points</span>
+            </button>
+        </nav>
+        
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="mainpage.js"></script>
+</body>
+</html>
